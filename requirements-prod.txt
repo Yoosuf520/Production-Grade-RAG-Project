@@ -32,10 +32,15 @@ torch==2.5.1
 langchain==1.2.18
 langgraph==1.1.10
 langchain-google-vertexai==3.2.3
+langchain-google-genai==2.0.10
 langchain-community==0.4.1
 langchain-openai==1.2.1
 pydantic==2.13.4
 pydantic-settings==2.14.2
+
+
+
+
 
 # --- GUARDRAILS ---
 nemoguardrails==0.21.0
