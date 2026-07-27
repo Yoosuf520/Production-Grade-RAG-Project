@@ -1,24 +1,9 @@
-name: Build, Push to ECR, and Deploy to EC2
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Configure AWS Credentials
+- name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: ap-south-1
 
       - name: Log in to Amazon ECR
         id: login-ecr
@@ -40,17 +25,10 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Authenticate Docker to ECR on EC2
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
-
-            # Stop existing container if running
+            aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 256269124934.dkr.ecr.ap-south-1.amazonaws.com
             docker stop k8s-rag-container || true
             docker rm k8s-rag-container || true
-
-            # Pull latest image
-            docker pull ${{ steps.login-ecr.outputs.registry }}/k8s-rag-app:latest
-
-            # Run updated container
+            docker pull 256269124934.dkr.ecr.ap-south-1.amazonaws.com/k8s-rag-app:latest
             docker run -d \
               --name k8s-rag-container \
               --restart unless-stopped \
@@ -65,4 +43,4 @@ jobs:
               -e PORTKEY_API_KEY="${{ secrets.PORTKEY_API_KEY }}" \
               -e JUDGE_GROQ="${{ secrets.JUDGE_GROQ }}" \
               -e BACKEND_URL="http://localhost:8080" \
-              ${{ steps.login-ecr.outputs.registry }}/k8s-rag-app:latest
+              256269124934.dkr.ecr.ap-south-1.amazonaws.com/k8s-rag-app:latest
