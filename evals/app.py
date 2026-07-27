@@ -1,6 +1,17 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # CRITICAL: logfire must be configured before all other imports
 # ─────────────────────────────────────────────────────────────────────────────
+import asyncio
+
+# Force standard asyncio loop policy before nest_asyncio or uvloop patches it
+try:
+    asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
+except Exception:
+    pass
+
+import nest_asyncio
+nest_asyncio.apply()
+
 import os
 import sys
 
