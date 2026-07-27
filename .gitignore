@@ -1,0 +1,24 @@
+# Environment variables and secrets
+.env
+*.env
+*.pem
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE / OS settings
+.vscode/
+.idea/
+.DS_Store
+
+# Data & Ingestion temp files
+processed_data/
+DATA/
