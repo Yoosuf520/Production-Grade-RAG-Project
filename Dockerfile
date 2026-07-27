@@ -10,8 +10,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
 
 WORKDIR /app
 
-# 3. Install requirements using requirements-prod.txt and uv
-COPY requirements-prod.txt requirements.txt
+# Install dependencies using single requirements.txt
+COPY requirements.txt .
 RUN uv pip install --system --no-cache -r requirements.txt
 
 # 4. Copy source directories
