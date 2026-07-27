@@ -10,9 +10,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
 
 WORKDIR /app
 
-# 3. Cache dependencies layer using tomllib
-COPY pyproject.toml .
-RUN python3 -c "import tomllib,subprocess; deps=tomllib.load(open('pyproject.toml','rb'))['project']['dependencies']; subprocess.run(['uv','pip','install','--system','--no-cache']+deps,check=True)"
+# 3. Install requirements using requirements-prod.txt and uv
+COPY requirements-prod.txt requirements.txt
+RUN uv pip install --system --no-cache -r requirements.txt
 
 # 4. Copy source directories
 COPY app/ ./app/
@@ -24,16 +24,13 @@ RUN mkdir -p /var/log/supervisor /var/run/supervisor
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# 6. Expose all ports
-# 8080: FastAPI Backend
-# 8501: Streamlit Main Chat UI
-# 8502: Streamlit Eval Suite UI
+# 6. Expose all ports (8080 Backend, 8501 Chat UI, 8502 Evals UI)
 EXPOSE 8080 8501 8502
 
-# 7. Non-root user hardening & permission fixes
+# 7. Non-root user hardening
 RUN useradd -m appuser && \
     chown -R appuser /app /var/log/supervisor /var/run/supervisor
 USER appuser
 
-# 8. Start supervisor to manage all 3 services
+# 8. Start supervisor to manage processes
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
