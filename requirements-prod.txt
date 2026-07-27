@@ -29,12 +29,12 @@ sentence-transformers==3.2.1
 torch==2.5.1
 
 # --- LANGCHAIN & AGENTIC ORCHESTRATION ---
-langchain==1.2.18
+langchain
 langgraph==1.1.10
 langchain-google-genai
-langchain-google-vertexai==3.2.3
-langchain-community==0.4.1
-langchain-openai==1.2.1
+langchain-google-vertexai
+langchain-community
+langchain-openai
 pydantic==2.13.4
 pydantic-settings==2.14.2
 
