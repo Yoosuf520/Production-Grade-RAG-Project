@@ -27,7 +27,7 @@ jobs:
       - name: Build, Tag, and Push Docker Image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: k8s-rag-app
+          ECR_REPOSITORY: rag-project
           IMAGE_TAG: latest
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
@@ -43,7 +43,7 @@ jobs:
             aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 256269124934.dkr.ecr.ap-south-1.amazonaws.com
             docker stop k8s-rag-container || true
             docker rm k8s-rag-container || true
-            docker pull 256269124934.dkr.ecr.ap-south-1.amazonaws.com/k8s-rag-app:latest
+            docker pull 256269124934.dkr.ecr.ap-south-1.amazonaws.com/rag-project:latest
             docker run -d \
               --name k8s-rag-container \
               --restart unless-stopped \
@@ -58,4 +58,4 @@ jobs:
               -e PORTKEY_API_KEY="${{ secrets.PORTKEY_API_KEY }}" \
               -e JUDGE_GROQ="${{ secrets.JUDGE_GROQ }}" \
               -e BACKEND_URL="http://localhost:8080" \
-              256269124934.dkr.ecr.ap-south-1.amazonaws.com/k8s-rag-app:latest
+              256269124934.dkr.ecr.ap-south-1.amazonaws.com/rag-project:latest
