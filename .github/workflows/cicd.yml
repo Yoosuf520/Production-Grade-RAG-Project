@@ -40,13 +40,17 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com
+            # 1. Login to ECR
+            aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 256269124934.dkr.ecr.ap-south-1.amazonaws.com
+            
+            # 2. Stop and remove old container
             docker stop k8s-rag-container || true
             docker rm k8s-rag-container || true
             
-            # FIX: Changed 'rag-project' to 'rag-project-1'
-            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/rag-project-1:latest
+            # 3. Pull latest image using exact Account ID
+            docker pull 256269124934.dkr.ecr.ap-south-1.amazonaws.com/rag-project-1:latest
             
+            # 4. Run new container
             docker run -d \
               --name k8s-rag-container \
               --restart unless-stopped \
@@ -62,4 +66,4 @@ jobs:
               -e PORTKEY_API_KEY="${{ secrets.PORTKEY_API_KEY }}" \
               -e JUDGE_GROQ="${{ secrets.JUDGE_GROQ }}" \
               -e BACKEND_URL="http://localhost:8080" \
-              ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/rag-project-1:latest
+              256269124934.dkr.ecr.ap-south-1.amazonaws.com/rag-project-1:latest
