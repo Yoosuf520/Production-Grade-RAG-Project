@@ -182,12 +182,12 @@ with tab1:
 with tab2:
     st.subheader("Live Pipeline — Collect Real Responses")
     st.markdown(
-        "Sends each golden question to your **running FastAPI app** (`localhost:8000/query`). "
+        "Sends each golden question to your **running FastAPI app** (`localhost:8080/query`). "
         "Captures the actual response, retrieved contexts, and tool called. "
         "Responses are truncated to 300 chars to save tokens for the RAGAS judging step."
     )
     st.info(
-        "⚠️ Make sure your FastAPI backend is running first: `uvicorn app.main:app --reload --port 8000`",
+        "⚠️ Make sure your FastAPI backend is running first: `uvicorn app.main:app --reload --port 8080`",
         icon="⚠️",
     )
 
@@ -195,8 +195,9 @@ with tab2:
     run_pipeline_btn = col_p1.button(
         "▶️ Run Live Pipeline",
         type="primary",
-        width="stretch",
+        use_container_width=True,
         disabled=st.session_state.pipeline_done,
+
     )
     reset_btn = col_p2.button(
         "🔄 Reset & Re-run",
