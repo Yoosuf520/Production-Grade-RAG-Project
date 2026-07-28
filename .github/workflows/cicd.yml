@@ -40,13 +40,17 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 256269124934.dkr.ecr.ap-south-1.amazonaws.com
+            aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com
             docker stop k8s-rag-container || true
             docker rm k8s-rag-container || true
-            docker pull 256269124934.dkr.ecr.ap-south-1.amazonaws.com/rag-project:latest
+            
+            # FIX: Changed 'rag-project' to 'rag-project-1'
+            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/rag-project-1:latest
+            
             docker run -d \
               --name k8s-rag-container \
               --restart unless-stopped \
+              -p 8080:8080 \
               -p 8501:8501 \
               -p 8502:8502 \
               -e LOGFIRE_TOKEN="${{ secrets.LOGFIRE_TOKEN }}" \
@@ -58,4 +62,4 @@ jobs:
               -e PORTKEY_API_KEY="${{ secrets.PORTKEY_API_KEY }}" \
               -e JUDGE_GROQ="${{ secrets.JUDGE_GROQ }}" \
               -e BACKEND_URL="http://localhost:8080" \
-              256269124934.dkr.ecr.ap-south-1.amazonaws.com/rag-project:latest
+              ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/rag-project-1:latest
