@@ -92,9 +92,9 @@ if prompt := st.chat_input("Ask about your documentation..."):
                 try:
                     # DISTRIBUTED TRACE: Calling Backend
                     with logfire.span("📡 Calling RAG Backend"):
-                        base_url = os.getenv("BACKEND_URL", "http://localhost:8000")
+                        base_url = os.getenv("BACKEND_URL", "http://localhost:8080")
                         if not base_url:
-                            base_url = "http://localhost:8000"
+                            base_url = "http://localhost:8080"
                         base_url = base_url.rstrip("/")
                         url = f"{base_url}/query"
                         
