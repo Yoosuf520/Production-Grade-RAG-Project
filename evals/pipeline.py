@@ -10,9 +10,11 @@ import copy
 import json
 import os
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util import Retry
 import logfire
 
-API_URL = "http://localhost:8080/query"
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8080/query")
 RESPONSE_TRUNCATE = 300
 DELAY_BETWEEN_CALLS = 10   # seconds — stays within Groq RPM on the main key
 REQUEST_TIMEOUT = 120      # seconds — guardrails + LangGraph + Groq can take >60s
@@ -35,6 +37,13 @@ def detect_tool(thought_process: list) -> str:
     return "unknown"
 
 
+def _get_retry_session():
+    session = requests.Session()
+    retries = Retry(total=3, backoff_factor=1, status_forcelist=[502, 503, 504])
+    session.mount("http://", HTTPAdapter(max_retries=retries))
+    return session
+
+
 def run_pipeline(golden_dataset: dict, progress_callback=None) -> dict:
     """
     Enriches each rag_sample in golden_dataset with live API results.
@@ -44,6 +53,7 @@ def run_pipeline(golden_dataset: dict, progress_callback=None) -> dict:
     dataset = copy.deepcopy(golden_dataset)
     samples = dataset["rag_samples"]
     n = len(samples)
+    session = _get_retry_session()
 
     with logfire.span("🚀 Eval Phase 1 — Live Pipeline", total_samples=n):
         for i, sample in enumerate(samples):
@@ -63,7 +73,7 @@ def run_pipeline(golden_dataset: dict, progress_callback=None) -> dict:
                         "session_id": f"eval_run_{i}"
                     }
 
-                    resp = requests.post(
+                    resp = session.post(
                         API_URL,
                         json=payload,
                         timeout=REQUEST_TIMEOUT,
@@ -87,7 +97,7 @@ def run_pipeline(golden_dataset: dict, progress_callback=None) -> dict:
                     )
 
                 except requests.exceptions.ConnectionError:
-                    logfire.error("❌ Cannot reach FastAPI — is the app running on :8000?")
+                    logfire.error("❌ Cannot reach FastAPI — is the app running on :8080?")
                     sample["actual_response"] = ""
                     sample["actual_contexts"] = sample.get("relevant_contexts", [])
                     sample["actual_tools_called"] = ["unknown"]

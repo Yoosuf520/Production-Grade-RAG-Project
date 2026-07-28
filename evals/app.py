@@ -24,13 +24,9 @@ import logfire
 logfire.configure(token=os.getenv("LOGFIRE_TOKEN"), service_name="evals")
 
 # ─────────────────────────────────────────────────────────────────────────────
-import asyncio
 import json
-import nest_asyncio
 import pandas as pd
 import streamlit as st
-
-nest_asyncio.apply()
 
 from evals.pipeline import run_pipeline, load_golden_dataset
 from evals.guardrails_eval import run_guardrails_eval, compute_guardrails_metrics
@@ -197,11 +193,10 @@ with tab2:
         type="primary",
         use_container_width=True,
         disabled=st.session_state.pipeline_done,
-
     )
     reset_btn = col_p2.button(
         "🔄 Reset & Re-run",
-        width="stretch",
+        use_container_width=True,
         disabled=not st.session_state.pipeline_done,
     )
 

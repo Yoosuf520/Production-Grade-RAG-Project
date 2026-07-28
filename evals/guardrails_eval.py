@@ -6,10 +6,11 @@ Classifies each result as TP / TN / FP / FN and computes precision + recall.
 
 import time
 import copy
+import os
 import requests
 import logfire
 
-API_URL = "http://localhost:8080/query"
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8080/query")
 
 
 def _is_blocked(response_json: dict) -> bool:
@@ -51,7 +52,7 @@ def run_guardrails_eval(guardrails_samples: list, progress_callback=None) -> lis
                     blocked = _is_blocked(resp.json())
 
                 except requests.exceptions.ConnectionError:
-                    logfire.error("❌ Cannot reach FastAPI — is the app running on :8000?")
+                    logfire.error("❌ Cannot reach FastAPI — is the app running on :8080?")
                     blocked = False
 
                 except Exception as e:
