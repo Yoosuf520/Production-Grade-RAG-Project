@@ -175,15 +175,16 @@ with tab1:
 # ═════════════════════════════════════════════════════════════════════════════
 # TAB 2 — Live Pipeline
 # ═════════════════════════════════════════════════════════════════════════════
+# --- Tab 2 Header Text ---
 with tab2:
     st.subheader("Live Pipeline — Collect Real Responses")
     st.markdown(
-        "Sends each golden question to your **running FastAPI app** (`localhost:8080/query`). "
+        "Sends each golden question to your **running FastAPI app** (`localhost:8080/query`). "  # <-- Changed 8000 to 8080
         "Captures the actual response, retrieved contexts, and tool called. "
         "Responses are truncated to 300 chars to save tokens for the RAGAS judging step."
     )
     st.info(
-        "⚠️ Make sure your FastAPI backend is running first: `uvicorn app.main:app --reload --port 8080`",
+        "⚠️ Make sure your FastAPI backend is running first: `uvicorn app.main:app --reload --port 8080`",  # <-- Changed 8000 to 8080
         icon="⚠️",
     )
 
