@@ -13,16 +13,16 @@ nest-asyncio
 
 # --- VECTOR DB & RETRIEVAL ---
 qdrant-client
-# redis
+redis
 flashrank
 sentence-transformers
 torch
 
 # # --- PRODUCTION PERSISTENCE ---
-# tenacity
-# langgraph-checkpoint-postgres
-# psycopg-pool
-# psycopg-binary
+tenacity
+langgraph-checkpoint-postgres
+psycopg-pool
+psycopg-binary
 
 # --- LANGCHAIN & AGENTIC ORCHESTRATION ---
 langchain-core
@@ -50,18 +50,18 @@ pdfplumber
 beautifulsoup4
 
 # --- OBSERVABILITY & DISTRIBUTED TRACING ---
-# langsmith
+langsmith
 logfire[fastapi,requests]
-# loguru
-# prometheus-client
-# prometheus-fastapi-instrumentator
-# slowapi
+loguru
+prometheus-client
+prometheus-fastapi-instrumentator
+slowapi
 
 # --- UI & EVALUATION (EVALS) ---
 streamlit
 ragas
-# deepeval
-# langfuse
+deepeval
+langfuse
 pandas
 openai
 google-generativeai
